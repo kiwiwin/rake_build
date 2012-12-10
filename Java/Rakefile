@@ -1,0 +1,34 @@
+require 'ant'
+
+PROJECT_NAME = 'Hello'
+
+SRC_DIR = 'src'
+BUILD_DIR = 'build'
+DIST_DIR = 'dist'
+
+task :default => :dist 
+
+task :init do
+	ant.tstamp
+	ant.mkdir :dir => BUILD_DIR
+end
+
+task :compile => :init do
+	ant.javac :srcdir => SRC_DIR, :destdir => BUILD_DIR
+end
+
+task :dist => :compile do
+	ant.mkdir :dir => "#{DIST_DIR}/lib"
+	ant.jar :jarfile => "#{DIST_DIR}/lib/#{PROJECT_NAME}.jar", :basedir => "#{BUILD_DIR}"
+end
+
+task :clean do
+  ant.delete :dir => BUILD_DIR
+	ant.delete :dir => DIST_DIR
+end
+
+task :run => :dist do
+  ant.java :classname => "#{PROJECT_NAME}" do
+    classpath :location => "#{DIST_DIR}/lib/#{PROJECT_NAME}.jar"
+  end
+end
