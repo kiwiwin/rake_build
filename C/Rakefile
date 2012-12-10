@@ -1,0 +1,17 @@
+file 'hello.o' => 'hello.c' do
+	`gcc -c hello.c`
+end
+
+task :make => 'hello.o' do
+	`gcc hello.o -o hello`
+end
+
+task :clean do
+	`rm -f *.o hello`
+end
+
+task :run => [:clean, :make]do
+	puts `./hello`
+end
+
+task :default => :run
